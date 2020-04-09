@@ -1,0 +1,5 @@
+com\wjiayi\hgshop\dao\UserDao.class
+com\wjiayi\hgshop\service\impl\SecuityServiceImpl.class
+com\wjiayi\hgshop\dao\OrderDao.class
+com\wjiayi\hgshop\dao\CartDao.class
+com\wjiayi\hgshop\service\impl\UserServiceImpl.class

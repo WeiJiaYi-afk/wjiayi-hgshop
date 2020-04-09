@@ -1,0 +1,9 @@
+com\wjiayi\hgshop\controller\SpuController.class
+com\wjiayi\hgshop\controller\AdminController.class
+com\wjiayi\hgshop\controller\SkuController.class
+com\wjiayi\hgshop\common\FileUtils.class
+com\wjiayi\hgshop\common\HgConstant.class
+com\wjiayi\hgshop\controller\BrandController.class
+com\wjiayi\hgshop\controller\IndexController.class
+com\wjiayi\hgshop\controller\CategoryController.class
+com\wjiayi\hgshop\controller\SpecController.class

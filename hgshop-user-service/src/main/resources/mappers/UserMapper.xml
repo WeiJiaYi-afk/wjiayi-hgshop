@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+     
+     <mapper namespace="com.wjiayi.hgshop.dao.UserDao">
+     	
+     	<!-- 查询 数据库里重名,取第一个limit1-->
+     	<select id="findUser" resultType="User">
+     		select * from hg_user 
+     		where username=#{username}
+     		and password =#{password} limit 1
+     	</select>
+ 
+ 		<!-- 根据用户名查找-->
+     	<select id="findByUserName" resultType="User">
+     		select * from hg_user 
+     		where username=#{username} limit 1
+     	</select>
+ 			
+      	<!-- 添加 -->
+     	<insert id="add" useGeneratedKeys="true" keyColumn="uid" keyProperty="uid">
+     		INSERT INTO hg_user(uid,username,password,name,email,telephone,birthday)VALUES 
+			(#{uid},#{username},#{password},#{name},#{email},#{telephone},#{birthday})
+     	</insert>
+     
+
+     </mapper>

@@ -1,0 +1,6 @@
+com\wjiayi\hgshop\service\SecuityService.class
+com\wjiayi\hgshop\pojo\Cart.class
+com\wjiayi\hgshop\pojo\Orders.class
+com\wjiayi\hgshop\pojo\OrderDetail.class
+com\wjiayi\hgshop\pojo\User.class
+com\wjiayi\hgshop\service\UserService.class

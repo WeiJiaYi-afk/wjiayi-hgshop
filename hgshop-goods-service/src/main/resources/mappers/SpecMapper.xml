@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+     <mapper namespace="com.wjiayi.hgshop.dao.SpecDao">
+     
+     	<resultMap type="Spec" id="SpecMapper">
+     		<id column="id" property="id"/>
+     		<result column="spec_name" property="specName"/>
+     		<collection property="optionList" column="id"
+     		select="listOptionsBySpecId"></collection>
+     	</resultMap>
+     
+     	<!-- sku子表 -->
+     	<select id="selectSpecOptionBySkuId" resultType="SpecOption">
+     		select so.option_name optionName, so.id, ss.spec_id,
+     		sp.spec_name as specName from hg_sku_spec ss left join
+     		hg_spec sp on ss.spec_id=sp.id
+     		left join hg_spec_option so on so.id=ss.spec_option_id
+     		where ss.sku_id=#{value}
+     	</select>
+     
+     	<!-- 规格子表 -->
+     	<select id="listOptionsBySpecId" resultType="SpecOption">
+			select id,option_name optionName,spec_id specId,orders from hg_spec_option
+			where spec_id=#{specId}
+		</select>
+     
+     	<!-- 添加主表 -->
+     	<insert id="addSpec" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+     		INSERT INTO hg_spec(spec_name)
+     		VALUES (#{specName})
+     	</insert>
+     
+     	<!-- 添加子表 -->
+     	<insert id="addSpecOption" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+     		INSERT INTO hg_spec_option(option_name,spec_id,orders)VALUES 
+			(#{optionName},#{specId},#{orders})
+     	</insert>
+     
+     	<!-- 修改主表 -->
+     	<update id="updateSpec">
+     		UPDATE hg_spec
+ 			SET spec_name=#{specName} 
+			WHERE id=#{id}
+     	</update>
+     
+     	<!-- 删除主表 -->
+     	<delete id="deleteBatch">
+     		delete from hg_spec where id in
+     		<foreach  collection="array" open="(" separator="," close=")" item="id">
+     			#{id}
+     		</foreach>
+     	</delete>
+     
+     	<!-- 删除子表 单删 -->
+     	<delete id="deleteSpecOption">
+     		DELETE FROM hg_spec_option WHERE spec_id = #{specId}
+     	</delete>
+     	
+     	<!-- 删除子表 批删-->
+     	<delete id="deleteOptionBatch">
+     		delete from hg_spec_option where spec_id in
+     		<foreach collection="array" open="(" separator="," close=")" item="id">
+     			#{id}
+     		</foreach>
+     	</delete>
+     	
+     	<!-- 查询 -->
+     	<select id="list" resultMap="SpecMapper">
+     		select * from hg_spec 
+     		<where>
+     			<if test="specName !=null and specName !=''">
+     				and spec_name like concat('%',#{specName},'%')
+     			</if>
+     		</where>
+     	</select>
+     	
+     	<!-- 根据id -->
+     	<select id="getById" resultMap="SpecMapper">
+     		select * from hg_spec where id = #{id}
+     	</select>
+     	
+     	
+     </mapper>

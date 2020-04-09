@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+     <mapper namespace="com.wjiayi.hgshop.dao.BrandDao">
+     
+     	<select id="listByFirstChar" resultType="Brand">
+     		select * from hg_brand
+     		where deleted_flag=0
+     		<where>
+     			<if test="firstChar !=null and firstChar !=''">
+     				and first_char = #{firstChar}
+     			</if>
+     		</where>
+     	</select>
+     
+     	<!-- 查询 -->
+     	<select id="list" resultType="Brand">
+     		select * from hg_brand
+     		<where>
+     			<if test="name !=null and name !=''">
+     				and name like concat('%',#{name},'%')
+     			</if>
+     		</where>
+     	</select>
+     	
+     	<!-- 修改 -->
+     	<update id="updateBrand">
+     		UPDATE hg_brand
+ 			SET name=#{name},first_char=#{firstChar}
+			WHERE id=#{id}
+     	</update>
+     	
+     	<!-- 根据id查询 -->
+     	<select id="getById" resultType="Brand">
+     		SELECT * FROM hg_brand WHERE id=#{id}
+     	</select>
+     	
+     	<!-- 添加 -->
+     	<insert id="addBrand">
+     		INSERT INTO hg_brand(name,first_char,deleted_flag)VALUES 
+			(#{name},#{firstChar},#{deletedFlag})
+     	</insert>
+     	
+     	<!-- 删除 批删 -->
+     	<delete id="deleteBatch">
+     		delete from hg_brand where id in
+     		<foreach  collection="array" open="(" separator="," close=")" item="id">
+     			#{id}
+     		</foreach>
+     	</delete>
+     	
+     	
+     </mapper>

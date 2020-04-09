@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+     
+     <mapper namespace="com.wjiayi.hgshop.dao.CartDao">
+		
+		<resultMap type="cart" id="cartMapper">
+			<id column="id" property="id"></id>
+			<result column="pnum" property="pnum"/>
+			<association property="sku">
+				<result property="id" column="skuid"/>
+				<result property="price" column="price"/>
+				<result property="title" column="titile"/>
+			</association>
+		</resultMap>
+ 
+	 	<!-- 添加购物车 -->
+	 	<insert id="add">
+			insert into hg_cart(uid,skuid,pnum,createtime,updatetime)
+			 values(#{uid},#{skuId},#{buyNum},now(),now())
+		</insert>
+ 
+ 		<!-- 根据用户id -->
+ 		<select id="listByUserId" resultMap="cartMapper">
+			select c.* , k.cart_thumbnail,k.price,k.title  from hg_cart c INNER JOIN hg_sku k ON k.id = c.skuid 
+ 			WHERE c.uid=#{value}
+ 		</select>
+
+     </mapper>

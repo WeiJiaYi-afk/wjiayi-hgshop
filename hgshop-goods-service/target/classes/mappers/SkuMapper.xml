@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+     
+    <mapper namespace="com.wjiayi.hgshop.dao.SkuDao">
+    
+    	<resultMap type="sku" id="skuMappere">
+    		<id column="id" property="id"/>
+    		<result column="title" property="title"/>
+    		<result column="sell_point" property="sellPoint"/>
+    		<result column="price" property="price"/>
+    		<result column="stock_count" property="stockCount"/>
+    		<result column="barcode" property="barcode"/>
+    		<result column="create_time" property="createTime"/>
+    		<result column="update_time" property="updateTime"/>
+    		<result column="cost_price" property="costPrice"/>
+    		<result column="market_price" property="marketPrice"/>
+    		<result column="spu_id" property="spuId"/>
+    		<result column="cart_thumbnail" property="cartThumbnail"/>
+    		<association column="spu_id" property="spu" select="com.wjiayi.hgshop.dao.SpuDao.getById"  ></association>
+    		<collection property="specOptionList" column="sku_id" select="com.wjiayi.hgshop.dao.SpecDao.selectSpecOptionBySkuId"></collection>
+    	</resultMap>
+    
+    
+    	<!-- 列表查询 -->
+    	<select id="list" resultMap="skuMappere">
+    		SELECT * FROM hg_sku
+    		<where>
+    			<if test="spuId !=0">
+    				and spu_id =#{spuId}
+    			</if>
+    			<if test="key !=null and key !=''">
+    				and (title like concat('%',#{key},'%')
+    				or sell_point like concat('%',#{key},'%') )
+    			</if>
+    			<if test="maxPrice !=null and maxPrice >0">
+    				and price &lt;= #{maxPrice}
+    			</if>
+    			<if test="minPrice !=null and minPrice >0">
+    				and price &gt;= #{minPrice}
+    			</if>
+    			<if test="maxStockCount !=null and maxStockCount >0">
+    				and stock_count &lt;= #{maxStockCount}
+    			</if>
+    			<if test="minStockCount !=null and minStockCount >0">
+    				and stock_count &gt;= #{minStockCount}
+    			</if>
+    		</where>
+    		order by create_time desc
+    	</select>
+    	
+    	<!-- 添加 -->
+    	<insert id="add" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    		INSERT INTO hg_sku(title,sell_point,price,stock_count,barcode,image,status,create_time,update_time,cost_price,market_price,spu_id,cart_thumbnail)
+    		VALUES (#{title},#{sellPoint},#{price},#{stockCount},#{barcode},#{image},1,now(),now(),#{costPrice},#{marketPrice},#{spuId},#{cartThumbnail})
+    	</insert>
+    	
+    	<!-- 添加具体的规格和属性值 -->
+    	<insert id="addSkuSpec">
+    		INSERT INTO hg_sku_spec(sku_id,spec_id,spec_option_id)
+    		VALUES (#{skuId},#{specOpt.specId},#{specOpt.id})
+    	</insert>
+    	
+    	<!-- 根据id查询 -->
+    	<select id="getById" resultMap="skuMappere">
+    		SELECT * FROM hg_sku WHERE id=#{id}
+    	</select>
+    	
+    	
+    	<!-- 根据spu id获取sku的列表 -->
+    	<select id="getBySpuId" resultMap="skuMappere">
+    		select id,title,sell_point,price,stock_count,barcode,image,
+		 	status,create_time,update_time,cost_price,market_price,cart_thumbnail,id as sku_id 
+		 	from hg_sku where spu_id=#{value}
+    	</select>
+    	
+    	
+    	<!-- 修改 -->
+    	<update id="update">
+    		UPDATE hg_sku
+			SET title=#{title},sell_point=#{sellPoint},price=#{price},stock_count=#{stockCount},barcode=#{barcode},
+			<if test="image !=null and image!=''">image=#{image},</if>
+			status=#{status},update_time=now(),cost_price=#{costPrice},market_price=#{marketPrice},
+			<if test="cartThumbnail !=null and cartThumbnail!=''">cart_thumbnail=#{cartThumbnail}</if>
+			WHERE id=#{id}
+    	</update>
+    	
+    	<!-- 删除主表 -->
+    	<delete id="deleteBatch">
+    		DELETE FROM hg_sku WHERE id in
+    		<foreach collection="array" item="id" open="(" separator="," close=")">
+    			#{id}
+    		</foreach>
+    	</delete>
+    	
+    	<!-- 删除子表 -->
+    	<delete id="deleteSkuSpec">
+    		DELETE FROM hg_sku_spec WHERE sku_id in
+    		<foreach collection="array" item="id" open="(" separator="," close=")">
+    			#{id}
+    		</foreach>
+    	</delete>
+    
+    </mapper>

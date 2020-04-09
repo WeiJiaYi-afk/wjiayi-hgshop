@@ -1,0 +1,4 @@
+com\wjiayi\hgshop\controller\UserController.class
+com\wjiayi\hgshop\controller\IndexController.class
+com\wjiayi\hgshop\controller\GoodsController.class
+com\wjiayi\hgshop\controller\SecuityController.class
